@@ -53,7 +53,7 @@ names(murders)
 ```{r}
   pop = murders$population
   sort(pop)
-  min(pop)
+  pop[1]
 ```
 ## Nomor 2
 ```{r}
