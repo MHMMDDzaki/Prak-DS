@@ -20,7 +20,7 @@ data("murders")
 ## Nomor 1
 ```{r}
 str(murders)
-as_tibble(murders$state)
+as_tibble(murders)
 ```
 ## Nomor 2
 ```{r}

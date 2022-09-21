@@ -11,7 +11,7 @@
 
 <meta name="author" content="123200102_Muhammad Dzaki" />
 
-<meta name="date" content="2022-09-20" />
+<meta name="date" content="2022-09-21" />
 
 <title>Latihan Modul 3 &amp; 4</title>
 
@@ -365,7 +365,7 @@ pre code {
 
 <h1 class="title toc-ignore">Latihan Modul 3 &amp; 4</h1>
 <h4 class="author">123200102_Muhammad Dzaki</h4>
-<h4 class="date">2022-09-20</h4>
+<h4 class="date">2022-09-21</h4>
 
 </div>
 
@@ -386,20 +386,20 @@ data(&quot;murders&quot;)</code></pre>
 ##  $ region    : Factor w/ 4 levels &quot;Northeast&quot;,&quot;South&quot;,..: 2 4 4 2 4 4 1 2 2 2 ...
 ##  $ population: num  4779736 710231 6392017 2915918 37253956 ...
 ##  $ total     : num  135 19 232 93 1257 ...</code></pre>
-<pre class="r"><code>as_tibble(murders$state)</code></pre>
-<pre><code>## # A tibble: 51 × 1
-##    value               
-##    &lt;chr&gt;               
-##  1 Alabama             
-##  2 Alaska              
-##  3 Arizona             
-##  4 Arkansas            
-##  5 California          
-##  6 Colorado            
-##  7 Connecticut         
-##  8 Delaware            
-##  9 District of Columbia
-## 10 Florida             
+<pre class="r"><code>as_tibble(murders)</code></pre>
+<pre><code>## # A tibble: 51 × 5
+##    state                abb   region    population total
+##    &lt;chr&gt;                &lt;chr&gt; &lt;fct&gt;          &lt;dbl&gt; &lt;dbl&gt;
+##  1 Alabama              AL    South        4779736   135
+##  2 Alaska               AK    West          710231    19
+##  3 Arizona              AZ    West         6392017   232
+##  4 Arkansas             AR    South        2915918    93
+##  5 California           CA    West        37253956  1257
+##  6 Colorado             CO    West         5029196    65
+##  7 Connecticut          CT    Northeast    3574097    97
+##  8 Delaware             DE    South         897934    38
+##  9 District of Columbia DC    South         601723    99
+## 10 Florida              FL    South       19687653   669
 ## # … with 41 more rows</code></pre>
 </div>
 <div id="nomor-2" class="section level2">
