@@ -1,0 +1,58 @@
+---
+title: "tugas_modul_5"
+author: "123200102_Muhammad Dzaki"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+## Modul 3
+
+meload library yang dibutuhkan
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r loading-libs, message=FALSE}
+library(dslabs)
+data("murders")
+str(murders)
+```
+## Nomor 1
+```{r}
+new_names = ifelse(nchar(murders$state) < 8, murders$state, murders$abb)
+new_names
+```
+
+## Nomor 2
+```{r}
+sum_n = function(n){
+  j = 1:n
+  print(sum(j))
+}
+
+sum_n(10)
+```
+
+## Nomor 3
+```{r}
+compute_s_n = function(n){
+  x = 1:n
+  x = x^2
+  print(sum(x))
+}
+
+compute_s_n(5)
+```
+
+## Nomor 4
+```{r}
+s_n = vector("numeric",25)
+for(n in 1:25){
+  s_n[n] = compute_s_n(n)
+}
+```
+
+## Nomor 5
+```{r}
+s_n <- sapply(1:25, compute_s_n)
+s_n
+```
