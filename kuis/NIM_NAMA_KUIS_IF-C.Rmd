@@ -1,0 +1,91 @@
+---
+title: "Kuis IF-C"
+author: "123200102_Muhammad_Dzaki_KUIS_IF-C"
+date: "2022-10-05"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Intro
+
+1. Boleh menggunakan PC lab / Laptop pribadi
+2. Pengumpulan berupa hasil knit Rmd ke pdf dengan nama NIM_NAMA_KUIS_IF-C.pdf.
+3. Durasi 2 Jam + 5 menit submit, > tidak bisa mengumpul.
+4. Pengerjaan offline, pengumpulan di Spada (online).
+5. Tidak boleh buka modul.
+6. Tidak boleh membuka internet (googling, WhatsApp, ig, sosmed, dan media komunikasi lain).
+7. Boleh bawa catatan 1 lembar A4.
+8. Izin keluar maks. 1x dengan durasi 2 menit.
+9. Tas dan HP diletakkan di depan.
+
+Selamat mengerjakan, semoga sukses!
+
+1. Load library apa saja yang kira-kira digunakan! Lalu gunakan data 'movielens'! **point 2**
+```{r No1}
+  library(dslabs)
+  library(tidyverse)
+  data('movielens')
+```
+
+2. Tampilkan struktur dari data Movielens! **point 5**
+```{r No2}
+  str(movielens)
+```
+Jawablah pertanyaan berikut 
+a. Class dari object movielens:
+    data.frame
+b. Jumlah baris:
+    100004
+c. Jumlah kolom:
+    7
+    
+3. Implementasikan fungsi yang dapat digunakan jika hanya ingin menampilkan nama-nama variabel dari object movielens! **point 5**
+```{r No3}
+  names(movielens)
+```
+4. Tuliskan fungsi untuk mengetahui tipe data dari variabel genres,dan jelaskan pada bawah chunk kenapa variabel genres menggunakan tipe data tersebut! **point 5**
+```{r No4}
+  class(movielens$genres)
+```
+  menggunakan factor dikarenakan tiap karakter angka merepresentasikan value genre yang berbeda, semisal karakter angka 1 bisa merepresentasikan sebagai genre drama
+  
+5. Tampilkan 5 observasi terakhir dari data Movielens! **point 5**
+```{r No5}
+  tail(movielens, n = 5)
+```
+
+6. Tampilkan 10 observasi teratas movielens tanpa variabel movieId & userId, simpan ke dalam object bernama "tiny_df"!  **point 15**
+```{r no6}
+  tiny_df = tail(movielens %>% select(title,year,genres,rating,timestamp), n=10)
+  tiny_df
+```
+
+7. Tampilkan 20 data teratas dengan genre hanya romance dengan diurutkan rating dari yang tertinggi. Tampilkan data dengan variabel title, year, genres, dan rating saja!    **point 15**
+Hilangkan data yang dengan judul berulang(Poin plus) **point 5**
+```{r no7}
+  movielens %>% select(title,year,genres,rating) %>% filter(genres == "Romance",!duplicated(title)) %>% arrange(desc(rating)) %>% head(n = 20)
+```
+
+8. Buatlah histogram dengan sumbu x tahun pembuatan film dan sumbu y frekuensi banyaknya film yang ada di tahun tersebut. Berikan warna kuning dan garis batas biru pada histogram dan beri judul yang sesuai. Di bawah chunk tuliskan kesimpulan yang dapat diperoleh dari histogram yang anda buat! **point 13**
+```{r No8}
+  "ndak paham ingfo caranya mas"
+```
+Kesimpulan: Tahun dengan jumlah film terbanyak dalam data movielens adalah sekitar tahun...
+
+9. Klasifikasikan data dari object "tiny_df" dari soal no 4 berdasarkan rating dengan kondisi : 
+-Rating kurang dari 2 dikategorikan sebagai “Negative” 
+-Rating lebih dari 3 dikategorikan sebagai “Positive" 
+-Rating antara kedua kondisi diatas dikategorikan sebagai”Mixed” **point 15**
+```{r No9}
+  dummy1 = ifelse(tiny_df$rating<2,"Negative",ifelse(tiny_df$rating>3,"Positive","Mixed"))
+  dummy1
+```
+10. Tambahkan variabel baru dalam data "tiny_df" dengan tambahan kolom baru dengan nama “sentiment” yang isinya merupakan implementasi nomor 9! **point 20**
+```{r No10}
+  tiny_df = mutate(tiny_df, sentiment = dummy1)
+  tiny_df
+```
