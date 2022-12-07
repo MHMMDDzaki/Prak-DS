@@ -1,0 +1,149 @@
+---
+title: "RESPONSI_DS-(C)"
+author: "Muhammad Dzaki_123200102"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Intro
+
+1.Kerjakan soal-soal yang ada! Jangan lupa AUTHOR diberi nama (pada bagian atas soal ini)
+2. Boleh menggunakan PC lab / Laptop pribadi
+3. Pengumpulan berupa hasil knit Rmd ke pdf dengan nama NIM_NAMA_RESPONSI_IF-C.pdf.
+4. Durasi 2 Jam + 5 menit submit, > tidak bisa mengumpul.
+5. Pengerjaan offline, pengumpulan di Spada (online).
+6. Tidak boleh buka modul.
+7. Tidak boleh membuka internet (googling, WhatsApp, ig, sosmed, dan media komunikasi lain).
+8. Boleh bawa catatan 1 lembar A4.
+9. Izin keluar maks. 1x dengan durasi 2 menit.
+10. Tas dan HP diletakkan di depan.
+11. Isi juga review/feedback/kritik/saran/masukan yang sudah disediakan di bagian paling bawah soal. ***WAJIB*** 
+
+## Persiapan
+Load library apa saja yang kira-kira digunakan! Lalu load dataset 'googleplay.csv' dan 'googleplay_user_review.csv'!
+
+```{r }
+library(tidyverse)
+library(tidymodels)
+library(tidytext)
+library(vroom)
+library(here)
+library(ggplot2)
+library(reshape2)
+
+ggplaystore = vroom(
+  here("/Users/macpro/Documents/GitHub/Prak-DS/Responsi/googleplaystore.csv")
+  )
+ggplaystore_review = vroom(here(
+  "/Users/macpro/Documents/GitHub/Prak-DS/Responsi/googleplaystore_user_reviews.csv"
+  ))
+```
+
+1. Tampilkan TOP 10 Aplikasi berdasarkan peringkat RATING yang diberikan user!
+```{r }
+ggplaystore %>% arrange(desc(Rating)) %>% select(App, Rating) %>% head(10)
+```
+
+2. Tampilkan TOP 10 Aplikasi berdasarkan banyaknya REVIEWS secara urut dari yang terbesar! 
+```{r }
+ggplaystore %>% arrange(desc(Reviews)) %>% select(App, Reviews) %>% head(10)
+```
+
+3. Tampilkan TOP 10 Aplikasi berdasarkan banyaknya unduhan, dan tampilkan secara urut berdasarkan rating! Clue : data preprocessing
+```{r }
+top = ggplaystore %>% arrange(Installs)
+top10 = top[1:10,]
+arrange(top10, desc(Rating)) %>% select(App, Installs, Rating) %>% head(10)
+```
+
+4. Tampilkan rata-rata RATING yang dihitung menggunakan fungsi buatan untuk setiap kategori aplikasi!
+```{r }
+rerata = ggplaystore %>% group_by(Category) %>% 
+  summarize(mean_Rating = mean(Rating))
+rerata
+```
+
+5. Berdasarkan soal nomor 4, buat plot untuk memvisualisasikan hasilnya! (Bentuk plot bebas)
+```{r }
+ggplaystore %>% group_by(Category) %>% 
+  summarize(mean_Rating = mean(Rating)) %>% 
+  ggplot(aes(x = mean_Rating, y = Category)) + geom_col() + labs(
+  x = "Rating",
+  y = "Kategori",
+  title = "Rata - Rata Rating",
+  subtitle = "pada setiap kategori aplikasi"
+) + theme_bw()
+```
+
+6. Tampilkan rata-rata REVIEWS yang dihitung menggunakan fungsi buatan untuk setiap kategori aplikasi!
+```{r }
+rerata_review = ggplaystore %>% group_by(Category) %>% 
+  summarize(mean_Review = mean(Reviews))
+rerata_review
+```
+
+7. Berdasarkan soal nomor 6, buat plot untuk memvisualisasikan hasilnya! (Bentuk plot bebas)
+```{r }
+ggplaystore %>% group_by(Category) %>% 
+  summarize(mean_Reviews = mean(Reviews)) %>% 
+  ggplot(aes(x = mean_Reviews, y = Category)) + geom_col() + labs(
+  x = "Reviews",
+  y = "Kategori",
+  title = "Rata - Rata Reviews",
+  subtitle = "pada setiap kategori aplikasi"
+) + theme_bw()
+```
+
+Info untuk 2 soal 8-10:Terdapat dua dataset yang digunakan. Satu dataset untuk info aplikasi dan satu dataset lagi untuk kumpulan reviewnya.
+
+8. Buat satu variable data baru yang isinya NAMA APLIKASI, RATING, dan JUMLAH REVIEW Positif! Tampilkan isi data tabel tersebut!
+```{r }
+join_data = ggplaystore %>% inner_join(ggplaystore_review)
+join_data = join_data %>% filter(Translated_Review != "nan")
+
+sentimen = join_data %>% group_by(App, Sentiment) %>% tally()
+sentimen = dcast(sentimen, App~ Sentiment, fun.sum = length)
+
+sentimen_positif = sentimen %>% inner_join(ggplaystore) %>% 
+  select(App, Rating, Positive)
+
+sentimen_positif %>% head(10)
+
+```
+
+9. Buat satu variable data baru yang isinya NAMA APLIKASI, Total REVIEWS, JUMLAH REVIEW Positif, JUMLAH REVIEW Negatif, JUMLAH REVIEW Neutral! Lalu tampilkan isi data tabel tersebut!
+```{r }
+sentimen[is.na(sentimen)] = 0
+sentimen = mutate(sentimen, 
+                  TotalReviews = sentimen$Positive + sentimen$Negative + 
+                    sentimen$Neutral)
+
+analisis_sentimen = sentimen %>% inner_join(ggplaystore, by="App") %>% 
+  select(App, TotalReviews, Positive, Negative, Neutral)
+analisis_sentimen %>% head(10)
+```
+
+10. Dalam dunia data scientist, sebelum melakukan pemodelan ada baiknya data dilakukan preprocessing terlebih dahulu. Dengan dataset review yang sudah dimasukkan oleh user, lakukan sebuah preprocessing data SEDERHANA yang menurut kalian dapat dilakukan untuk dataset tersebut agar dataset bisa siap untuk dimodelkan (simpan hasil preprocessing dalam variabel baru)! 
+
+Clue : Clean, Tidy, no redundacy, no dupe, no null.
+```{r }
+Cleaned_data = ggplaystore %>% inner_join(ggplaystore_review) %>% 
+  filter(Translated_Review != "nan") %>% 
+  unnest_tokens(word, Translated_Review) %>% anti_join(stop_words)
+Cleaned_data
+```
+
+
+Kritik/saran/masukan/feedback/review/uneg-uneg:
+nggak tau, menurut ku udah bagus 
+
+
+
+
+================================================ SELESAI ================================================
